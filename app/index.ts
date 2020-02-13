@@ -42,7 +42,19 @@ app.post('/addAvatar/:userNick', upload.single('avatar'), async function (req: a
 
     if (user) await mongoClient.updateObject<User>('users', { nick: req.params.userNick }, user);
 
-    res.sendStatus(201);
+    res.sendStatus(200);
+});
+
+app.get('/getAvatar/:userNick', async function (req: any, res: any) {
+
+    const user: User | null = await mongoClient.findObject<User>('users', { nick: req.params.userNick });
+    if (!user) throw new Error('User was not found');
+
+    const binaryData = Buffer.from(user.avatar, 'base64');
+
+    res.set('Content-Type', 'image/jpeg');
+    res.status(200);
+    res.send(binaryData);
 });
 
 app.listen(3000, function () {
