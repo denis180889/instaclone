@@ -34,19 +34,19 @@ app.post('/create-user', jsonParser, async function (req: any, res: any) {
     res.sendStatus(201);
 });
 
-app.post('/addAvatar/:userNick', upload.single('avatar'), async function (req: any, res: any) {
+app.post('/add-avatar/:userNick', upload.single('avatar'), async function (req: any, res: any) {
     const base64Avatar = req.file.buffer.toString('base64');
 
     const user: User | null = await mongoClient.findObject<User>('users', { nick: req.params.userNick });
-    if (user) user.avatar = base64Avatar;
+    if (!user) throw new Error('User was not found');
 
-    if (user) await mongoClient.updateObject<User>('users', { nick: req.params.userNick }, user);
+    user.avatar = base64Avatar;
+    await mongoClient.updateObject<User>('users', { nick: req.params.userNick }, user);
 
     res.sendStatus(200);
 });
 
-app.get('/getAvatar/:userNick', async function (req: any, res: any) {
-
+app.get('/get-avatar/:userNick', async function (req: any, res: any) {
     const user: User | null = await mongoClient.findObject<User>('users', { nick: req.params.userNick });
     if (!user) throw new Error('User was not found');
 
