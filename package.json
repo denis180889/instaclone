@@ -1,0 +1,30 @@
+{
+  "name": "instaclone",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node app/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/denis180889/instaclone.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/denis180889/instaclone/issues"
+  },
+  "homepage": "https://github.com/denis180889/instaclone#readme",
+  "dependencies": {
+    "@types/express": "^4.16.0",
+    "@types/mongodb": "^3.3.14",
+    "@types/multer": "^1.4.2",
+    "body-parser": "^1.19.0",
+    "express": "^4.16.4",
+    "mongodb": "^3.4.1",
+    "multer": "^1.4.2",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.2.2"
+  }
+}
