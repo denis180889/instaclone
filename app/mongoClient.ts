@@ -21,7 +21,6 @@ export default class MongoClient {
         try {
             const db = client.db();
             await db.collection(collection).insertOne(obj);
-            console.log("Done, user was saved");
         }
         finally {
             await client.close();
