@@ -1,21 +1,25 @@
 import express from 'express';
+import passport from 'passport'
 import bodyParser from 'body-parser';
 import MongoClient from './mongoClient';
 import multer from 'multer';
 import { ObjectId } from 'mongodb';
+import jwt from 'jsonwebtoken';
+import './passport'
 
 const app = express();
 
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
-
 const jsonParser = bodyParser.json()
+const passportJwt = passport.authenticate('jwt', { session: false });
 
 const mongoClient = new MongoClient('mongodb://localhost:27017/user_database');
 
 export interface User {
     _id?: ObjectId;
     nick: string;
+    password: string;
     name: string;
     age: string;
     about: string;
@@ -27,7 +31,25 @@ export interface Photo {
     photos: string[];
 }
 
-app.get('/', function (req, res) {
+app.post('/login', jsonParser, function (req, res, next) {
+    passport.authenticate('local', { session: false }, (err, user, info) => {
+        if (err || !user) {
+            return res.status(400).json({
+                message: 'Something is not right',
+                user: user
+            });
+        }
+        req.login(user, { session: false }, (err) => {
+            if (err) {
+                res.send(err);
+            }
+            const token = jwt.sign(user, 'your_jwt_secret');
+            return res.json({ user, token });
+        });
+    })(req, res);
+});
+
+app.get('/', passportJwt, async function (req, res) {
     res.send('Hello World!');
 });
 
