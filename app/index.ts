@@ -3,11 +3,13 @@ import passport from 'passport'
 import bodyParser from 'body-parser';
 import MongoClient from './mongoClient';
 import multer from 'multer';
+import cors from 'cors';
 import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
 import './passport'
 
 const app = express();
+app.use(cors());
 
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
@@ -31,7 +33,7 @@ export interface Photo {
     photos: string[];
 }
 
-app.post('/login', jsonParser, function (req, res, next) {
+app.post('/login', jsonParser, async function (req, res, next) {
     passport.authenticate('local', { session: false }, (err, user, info) => {
         if (err || !user) {
             return res.status(400).json({

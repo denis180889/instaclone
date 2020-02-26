@@ -22,7 +22,7 @@
             "runtimeArgs": [
                 "--nolazy",
                 "-r",
-                "ts-node/register"
+                "./app/node_modules/ts-node/register"
             ],
         }
     ]

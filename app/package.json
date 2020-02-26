@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node -P app/tsconfig.json app/index.ts"
+    "start": "ts-node index.ts"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/denis180889/instaclone#readme",
   "dependencies": {
+    "@types/cors": "^2.8.6",
     "@types/express": "^4.16.0",
     "@types/jsonwebtoken": "^8.3.7",
     "@types/mongodb": "^3.3.14",
@@ -25,6 +26,7 @@
     "@types/passport-jwt": "^3.0.3",
     "@types/passport-local": "^1.0.33",
     "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.4.1",
