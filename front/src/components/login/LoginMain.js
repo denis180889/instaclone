@@ -1,9 +1,8 @@
 import React from 'react';
-import LoginGreeting from './login/LoginGreeting';
-import LoginForm from './login/LoginForm';
-import LoginError from './login/LoginError';
+import LoginForm from './LoginForm';
+import LoginError from './LoginError';
 
-export default class Login extends React.Component {
+export default class LoginMain extends React.Component {
 
     constructor(props) {
         super(props);
@@ -11,8 +10,7 @@ export default class Login extends React.Component {
             nick: '',
             password: '',
             data: undefined,
-            error: false,
-            authorized: false,
+            error: false
         };
 
         this.signIn = this.signIn.bind(this);
@@ -47,10 +45,7 @@ export default class Login extends React.Component {
 
         if (response.ok) {
             const data = await response.json();
-            this.setState({
-                data: data,
-                authorized: true
-            });
+            this.props.handleAuth(data.user.nick, data.token);
         }
         else {
             this.setState({
@@ -60,26 +55,19 @@ export default class Login extends React.Component {
     }
 
     render() {
-        if (this.state.authorized) {
-            return (
-                <LoginGreeting nick={this.state.data.user.nick} />
-            )
-        }
-        if (!this.state.authorized) {
-            return (
-                <div>
-                    <LoginForm
-                        signIn={this.signIn}
-                        nick={this.state.nick}
-                        password={this.state.password}
-                        handleChangeNick={this.handleChangeNick}
-                        handleChangePassword={this.handleChangePassword}
-                    />
-                    {this.state.error &&
-                        <LoginError />
-                    }
-                </div >
-            );
-        }
+        return (
+            <div>
+                <LoginForm
+                    signIn={this.signIn}
+                    nick={this.state.nick}
+                    password={this.state.password}
+                    handleChangeNick={this.handleChangeNick}
+                    handleChangePassword={this.handleChangePassword}
+                />
+                {this.state.error &&
+                    <LoginError />
+                }
+            </div >
+        );
     }
 }

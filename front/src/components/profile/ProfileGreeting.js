@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class LoginGreeting extends React.Component {
+export default class ProfileGreeting extends React.Component {
 
     render() {
         return (
