@@ -1,4 +1,7 @@
 import React from 'react';
+import LoginGreeting from './login/LoginGreeting';
+import LoginForm from './login/LoginForm';
+import LoginError from './login/LoginError';
 
 export default class Login extends React.Component {
 
@@ -59,23 +62,21 @@ export default class Login extends React.Component {
     render() {
         if (this.state.authorized) {
             return (
-                <div>
-                    <h1>Hey {this.state.data.user.nick}, nice to see you</h1>
-                </div >
+                <LoginGreeting nick={this.state.data.user.nick} />
             )
         }
         if (!this.state.authorized) {
             return (
                 <div>
-                    <form onSubmit={this.signIn}>
-                        <h1>Welcome to Instaclone</h1>
-                        <input type="text" name="nick" value={this.state.nick} onChange={this.handleChangeNick}></input>
-                        <input type="text" name="password" value={this.state.password} onChange={this.handleChangePassword}></input>
-                        <input type="submit" value="Sign In" />
-
-                    </form>
+                    <LoginForm
+                        signIn={this.signIn}
+                        nick={this.state.nick}
+                        password={this.state.password}
+                        handleChangeNick={this.handleChangeNick}
+                        handleChangePassword={this.handleChangePassword}
+                    />
                     {this.state.error &&
-                        <p>Credentials are not right!</p>
+                        <LoginError />
                     }
                 </div >
             );
