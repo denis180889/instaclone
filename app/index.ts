@@ -30,7 +30,7 @@ export interface User {
 
 export interface Photo {
     nick: string;
-    photos: string[];
+    photos: { [key: number]: string };
 }
 
 app.post('/login', jsonParser, async function (req, res, next) {
@@ -90,10 +90,12 @@ app.post('/add-photos/:userNick', upload.array('photos', 5), async function (req
     const user: User | null = await mongoClient.findObject<User>('users', { nick: req.params.userNick });
     if (!user) throw new Error('User was not found');
 
-    let base64Photos: string[] = [];
+    let base64Photos: { [key: number]: string } = {};
+    let key = Date.now();
     for (const originPhoto of req.files) {
         const base64Photo = originPhoto.buffer.toString('base64');
-        base64Photos.push(base64Photo);
+        key += 1;
+        base64Photos[key] = base64Photo;
     }
 
     const photo: Photo = { nick: req.params.userNick, photos: base64Photos }
@@ -109,17 +111,25 @@ app.get('/get-photos/:userNick', async function (req: any, res: any) {
     const photoObj: Photo | null = await mongoClient.findObject<Photo>('photos', { nick: req.params.userNick });
     if (!photoObj) throw new Error('Photo was not found for this user');
 
-    const base64Photos: string[] = photoObj.photos;
+    const base64Photos: { [key: number]: string } = photoObj.photos;
 
-    let binaryPhotos: Buffer[] = [];
-    for (const base64Photo of base64Photos) {
-        const binaryPhoto = Buffer.from(base64Photo, 'base64');
-        binaryPhotos.push(binaryPhoto);
-    }
+    let photoKeys = Object.keys(base64Photos);
+
+    return res.json({ photoKeys });
+});
+
+app.get('/get-photo/:userNick/:photoId', async function (req: any, res: any) {
+    const photo = await mongoClient.findObject<Photo>('photos', { nick: req.params.userNick });
+    if (!photo) throw new Error('Photo was not found');
+
+    const stringData = photo.photos[req.params.photoId];
+    if (!stringData) throw new Error('Invalid photo id');
+
+    const binaryData = Buffer.from(stringData, 'base64');
 
     res.set('Content-Type', 'image/jpeg');
     res.status(200);
-    res.send(binaryPhotos);
+    res.send(binaryData);
 });
 
 app.listen(3000, function () {

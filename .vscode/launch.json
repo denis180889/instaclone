@@ -8,6 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
+            "cwd": "${workspaceFolder}/app",
             "skipFiles": [
                 "<node_internals>/**",
                 "node_modules/**"
@@ -17,12 +18,12 @@
             "internalConsoleOptions": "openOnSessionStart",
             "outputCapture": "std",
             "args": [
-                "${workspaceFolder}/app/index.ts"
+                "index.ts"
             ],
             "runtimeArgs": [
                 "--nolazy",
                 "-r",
-                "./app/node_modules/ts-node/register"
+                "ts-node/register"
             ],
         }
     ]
