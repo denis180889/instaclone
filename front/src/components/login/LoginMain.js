@@ -1,6 +1,6 @@
 import React from 'react';
-import LoginForm from './LoginForm';
-import LoginError from './LoginError';
+import LoginForm from './loginForm';
+import LoginError from './loginError';
 
 export default class LoginMain extends React.Component {
 

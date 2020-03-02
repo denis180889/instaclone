@@ -1,6 +1,6 @@
 import React from "react";
-import LoginMain from "./components/login/LoginMain";
-import ProfileGreeting from "./components/profile/ProfileGreeting";
+import LoginMain from "./components/login/loginMain";
+import ProfileMain from "./components/profile/profileMain";
 
 export default class App extends React.Component {
 
@@ -12,7 +12,8 @@ export default class App extends React.Component {
         token: localStorage.getItem("token")
       }
     };
-    this.handleAuth = this.handleAuth.bind(this)
+    this.handleAuth = this.handleAuth.bind(this);
+    this.handleLogout = this.handleLogout.bind(this)
   }
 
   handleAuth(nick, token) {
@@ -26,6 +27,17 @@ export default class App extends React.Component {
     });
   }
 
+  handleLogout() {
+    localStorage.removeItem("nick");
+    localStorage.removeItem("token");
+    this.setState({
+      auth: {
+        nick: "",
+        token: ""
+      }
+    });
+  }
+
   isAuthorized() {
     return Boolean(this.state.auth.token);
   }
@@ -34,13 +46,14 @@ export default class App extends React.Component {
     return (
       <div>
         {this.isAuthorized() ? (
-          <ProfileGreeting nick={this.state.auth.nick} />
+          <ProfileMain
+            nick={this.state.auth.nick}
+            handleLogout={this.handleLogout}
+          />
         ) : (
             <LoginMain handleAuth={this.handleAuth} />
           )}
       </div>
     )
-
   }
-
 }
