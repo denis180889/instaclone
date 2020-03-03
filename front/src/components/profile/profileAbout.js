@@ -1,4 +1,5 @@
 import React from 'react';
+import EditableLabel from 'react-inline-editing';
 
 export default class ProfileAbout extends React.Component {
 
@@ -30,10 +31,31 @@ export default class ProfileAbout extends React.Component {
     render() {
         return (
             <div>
-                <p>NAME: {this.state.name}</p>
-                <p>AGE: {this.state.age}</p>
-                <p>ABOUT: {this.state.about}</p>
-            </div>
+                <ul className="container container-column">
+                    <li className="container container-row">
+                        <label className="item-label">NAME:</label>
+                        <span className="item-value">{this.state.name}</span>
+                    </li>
+                    <li className="container container-row">
+                        <label className="item-label">AGE:</label>
+                        <span className="item-value">{this.state.age}</span>
+                    </li>
+                    <li className="container container-row">
+                        <label className="item-label">ABOUT:</label>
+                        <span className="item-value">{this.state.about}</span>
+                    </li>
+                    <li className="container container-row">
+                        <label className="item-label">OTHER:</label>
+                        <EditableLabel
+                            text='rfefer'
+                            inputClassName="item-value"
+                            onFocus={this._handleFocus}
+                            onFocusOut={this._handleFocusOut}
+                        />
+                    </li>
+
+                </ul>
+            </div >
         )
     }
 }

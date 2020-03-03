@@ -44,7 +44,7 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="container container-main">
         {this.isAuthorized() ? (
           <ProfileMain
             token={this.state.auth.token}

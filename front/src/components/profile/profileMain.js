@@ -8,19 +8,21 @@ export default class ProfileMain extends React.Component {
 
     render() {
         return (
-            <div >
-                <ProfileAvatar
-                    token={this.props.token}
-                    nick={this.props.nick}
-                />
+            <div>
                 <ProfileGreeting
                     nick={this.props.nick}
                     handleLogout={this.props.handleLogout}
                 />
-                <ProfileAbout
-                    token={this.props.token}
-                    nick={this.props.nick}
-                />
+                <div className="container container-row">
+                    <ProfileAvatar
+                        token={this.props.token}
+                        nick={this.props.nick}
+                    />
+                    <ProfileAbout
+                        token={this.props.token}
+                        nick={this.props.nick}
+                    />
+                </div>
                 <ProfilePhotos
                     token={this.props.token}
                     nick={this.props.nick}
