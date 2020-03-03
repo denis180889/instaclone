@@ -2,6 +2,7 @@ import passport from 'passport';
 import { Strategy } from 'passport-local'
 import MongoClient from './mongoClient';
 import passportJWT from 'passport-jwt';
+import { User } from './index';
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 
@@ -13,7 +14,10 @@ passport.use(new Strategy({
 },
     async function (nickName: string, pass: string, cb: any) {
         try {
-            const user = await mongoClient.findObject('users', { nick: nickName, password: pass });
+            const user = await mongoClient.findObject<User>('users', { nick: nickName, password: pass });
+            if (user) {
+                delete user.avatar;
+            }
             if (!user) {
                 return cb(null, false, { message: 'Incorrect email or password.' });
             }

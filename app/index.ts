@@ -3,13 +3,11 @@ import passport from 'passport'
 import bodyParser from 'body-parser';
 import MongoClient from './mongoClient';
 import multer from 'multer';
-import cors from 'cors';
 import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
 import './passport'
 
 const app = express();
-app.use(cors());
 
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
@@ -63,6 +61,18 @@ app.post('/create-user', jsonParser, async function (req: any, res: any) {
     res.sendStatus(201);
 });
 
+app.get('/get-user/:userNick', passport.authenticate('jwt', { session: false }), async function (req: any, res: any) {
+    const user: User | null = await mongoClient.findObject<User>('users', { nick: req.params.userNick });
+    if (!user) throw new Error('User was not found');
+
+    delete user.password;
+    delete user.nick;
+    delete user.avatar;
+    delete user._id;
+
+    res.json(user);
+});
+
 app.post('/add-avatar/:userNick', upload.single('avatar'), async function (req: any, res: any) {
     const base64Avatar = req.file.buffer.toString('base64');
 
@@ -86,7 +96,7 @@ app.get('/get-avatar/:userNick', async function (req: any, res: any) {
     res.send(binaryData);
 });
 
-app.post('/add-photos/:userNick', upload.array('photos', 5), async function (req: any, res: any) {
+app.post('/add-photos/:userNick', passportJwt, upload.array('photos', 5), async function (req: any, res: any) {
     const user: User | null = await mongoClient.findObject<User>('users', { nick: req.params.userNick });
     if (!user) throw new Error('User was not found');
 
@@ -104,7 +114,7 @@ app.post('/add-photos/:userNick', upload.array('photos', 5), async function (req
     res.sendStatus(200);
 });
 
-app.get('/get-photos/:userNick', async function (req: any, res: any) {
+app.get('/get-photos/:userNick', passportJwt, async function (req: any, res: any) {
     const user: User | null = await mongoClient.findObject<User>('users', { nick: req.params.userNick });
     if (!user) throw new Error('User was not found');
 

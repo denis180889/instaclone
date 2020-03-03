@@ -47,6 +47,7 @@ export default class App extends React.Component {
       <div>
         {this.isAuthorized() ? (
           <ProfileMain
+            token={this.state.auth.token}
             nick={this.state.auth.nick}
             handleLogout={this.handleLogout}
           />

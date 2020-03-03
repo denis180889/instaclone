@@ -10,8 +10,13 @@ export default class ProfilePhotos extends React.Component {
     }
 
     async componentDidMount() {
-        const respose = await fetch(`http://localhost:3000/get-photos/${this.props.nick}`);
-        const data = await respose.json();
+        const response = await fetch(`/get-photos/${this.props.nick}`, {
+            method: 'GET',
+            headers: {
+                "Authorization": "Bearer " + this.props.token
+            }
+        });
+        const data = await response.json();
         this.setState({
             photoKeys: data.photoKeys
         });
@@ -22,8 +27,8 @@ export default class ProfilePhotos extends React.Component {
             <div>
                 {
                     this.state.photoKeys
-                        .map(photoId =>
-                            (<img src={`http://localhost:3000/get-photo/${this.props.nick}/${photoId}`} width="275" height="255" alt=""></img>)
+                        .map((photoId, index) =>
+                            (<img src={`/get-photo/${this.props.nick}/${photoId}`} key={index} width="275" height="255" alt=""></img>)
                         )
                 }
             </div>

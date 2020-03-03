@@ -5,7 +5,7 @@ export default class ProfileAvatar extends React.Component {
     render() {
         return (
             <div>
-                <img src={`http://localhost:3000/get-avatar/${this.props.nick}`} alt=""></img>
+                <img src={`/get-avatar/${this.props.nick}`} alt=""></img>
             </div>
         )
     }

@@ -32,7 +32,7 @@ export default class LoginMain extends React.Component {
         const nickName = e.target.elements.nick.value;
         const pass = e.target.elements.password.value;
 
-        let response = await fetch('http://localhost:3000/login', {
+        let response = await fetch('/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
