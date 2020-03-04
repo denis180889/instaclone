@@ -22,6 +22,9 @@ export default class MongoClient {
             const db = client.db();
             await db.collection(collection).insertOne(obj);
         }
+        catch (e) {
+            throw e;
+        }
         finally {
             await client.close();
         }
@@ -34,6 +37,9 @@ export default class MongoClient {
             const result = await db.collection<T>(collection).findOne(filter);
             return result;
         }
+        catch (e) {
+            throw e;
+        }
         finally {
             await client.close();
         }
@@ -43,7 +49,10 @@ export default class MongoClient {
         const client = await this.getConnection();
         try {
             const db = client.db();
-            await db.collection<T>(collection).update(filter, obj);
+            await db.collection<T>(collection).updateOne(filter, { $set: obj });
+        }
+        catch (e) {
+            throw e;
         }
         finally {
             await client.close();

@@ -73,6 +73,18 @@ app.get('/get-user/:userNick', passport.authenticate('jwt', { session: false }),
     res.json(user);
 });
 
+app.patch('/edit-user/:userNick', passport.authenticate('jwt', { session: false }), jsonParser, async function (req: any, res: any) {
+    const user: User | null = await mongoClient.findObject<User>('users', { nick: req.params.userNick });
+    if (!user) throw new Error('User was not found');
+
+    user.name = req.body.name;
+    user.age = req.body.age;
+    user.about = req.body.about;
+    await mongoClient.updateObject<User>('users', { nick: req.params.userNick }, user);
+
+    res.sendStatus(200);
+});
+
 app.post('/add-avatar/:userNick', upload.single('avatar'), async function (req: any, res: any) {
     const base64Avatar = req.file.buffer.toString('base64');
 
