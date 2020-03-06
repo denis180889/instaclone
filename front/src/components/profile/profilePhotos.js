@@ -24,13 +24,16 @@ export default class ProfilePhotos extends React.Component {
 
     render() {
         return (
-            <div>
-                {
-                    this.state.photoKeys
-                        .map((photoId, index) =>
-                            (<img src={`/get-photo/${this.props.nick}/${photoId}`} key={index} width="275" height="255" alt=""></img>)
-                        )
-                }
+            <div >
+                <hr></hr>
+                <div className="container container-wrap">
+                    {
+                        this.state.photoKeys
+                            .map((photoId, index) =>
+                                (<img className="item-margin" src={`/get-photo/${this.props.nick}/${photoId}`} key={index} width="275" height="255" alt=""></img>)
+                            )
+                    }
+                </div>
             </div>
         )
     }

@@ -61,7 +61,7 @@ app.post('/create-user', jsonParser, async function (req: any, res: any) {
     res.sendStatus(201);
 });
 
-app.get('/get-user/:userNick', passport.authenticate('jwt', { session: false }), async function (req: any, res: any) {
+app.get('/get-user/:userNick', passportJwt, async function (req: any, res: any) {
     const user: User | null = await mongoClient.findObject<User>('users', { nick: req.params.userNick });
     if (!user) throw new Error('User was not found');
 
@@ -73,7 +73,7 @@ app.get('/get-user/:userNick', passport.authenticate('jwt', { session: false }),
     res.json(user);
 });
 
-app.patch('/edit-user/:userNick', passport.authenticate('jwt', { session: false }), jsonParser, async function (req: any, res: any) {
+app.patch('/edit-user/:userNick', passportJwt, jsonParser, async function (req: any, res: any) {
     const user: User | null = await mongoClient.findObject<User>('users', { nick: req.params.userNick });
     if (!user) throw new Error('User was not found');
 
@@ -104,8 +104,15 @@ app.get('/get-avatar/:userNick', async function (req: any, res: any) {
     const binaryData = Buffer.from(user.avatar, 'base64');
 
     res.set('Content-Type', 'image/jpeg');
-    res.status(200);
-    res.send(binaryData);
+
+    if (binaryData) {
+        res.status(200);
+        res.send(binaryData)
+    }
+    else {
+        res.sendStatus(404)
+    }
+    ;
 });
 
 app.post('/add-photos/:userNick', passportJwt, upload.array('photos', 5), async function (req: any, res: any) {
@@ -131,13 +138,14 @@ app.get('/get-photos/:userNick', passportJwt, async function (req: any, res: any
     if (!user) throw new Error('User was not found');
 
     const photoObj: Photo | null = await mongoClient.findObject<Photo>('photos', { nick: req.params.userNick });
-    if (!photoObj) throw new Error('Photo was not found for this user');
-
-    const base64Photos: { [key: number]: string } = photoObj.photos;
-
-    let photoKeys = Object.keys(base64Photos);
-
-    return res.json({ photoKeys });
+    if (photoObj) {
+        const base64Photos: { [key: number]: string } = photoObj.photos;
+        let photoKeys = Object.keys(base64Photos);
+        return res.json({ photoKeys });
+    }
+    else {
+        res.sendStatus(404);
+    }
 });
 
 app.get('/get-photo/:userNick/:photoId', async function (req: any, res: any) {
