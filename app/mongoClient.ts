@@ -58,4 +58,18 @@ export default class MongoClient {
             await client.close();
         }
     }
+
+    async updateExistingObject(collection: string, filter: any, obj: any) {
+        const client = await this.getConnection();
+        try {
+            const db = client.db();
+            await db.collection(collection).updateOne(filter, { $set: obj });
+        }
+        catch (e) {
+            throw e;
+        }
+        finally {
+            await client.close();
+        }
+    }
 }

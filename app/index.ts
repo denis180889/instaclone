@@ -128,8 +128,16 @@ app.post('/add-photos/:userNick', passportJwt, upload.array('photos', 5), async 
     }
 
     const photo: Photo = { nick: req.params.userNick, photos: base64Photos }
-    await mongoClient.insertObject('photos', photo);
 
+    const existingPhotos: Photo | null = await mongoClient.findObject<Photo>('photos', { nick: req.params.userNick });
+    if (!existingPhotos) {
+        await mongoClient.insertObject('photos', photo);
+    }
+    else {
+        for (let [key, value] of Object.entries(base64Photos)) {
+            await mongoClient.updateExistingObject('photos', { nick: req.params.userNick }, { [`photos.${key}`]: value });
+        }
+    }
     res.sendStatus(200);
 });
 
