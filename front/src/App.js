@@ -2,22 +2,21 @@ import React from "react";
 import LoginMain from "./components/login/loginMain";
 import ProfileMain from "./components/profile/profileMain";
 import RegistrationMain from "./components/registration/registrationMain";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 export default class App extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
       registration: false,
       auth: {
         nick: localStorage.getItem("nick"),
-        token: localStorage.getItem("token")
-      }
+        token: localStorage.getItem("token"),
+      },
     };
     this.handleAuth = this.handleAuth.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
-    this.handleRegistration = this.handleRegistration.bind(this)
-    this.finishRegistration = this.finishRegistration.bind(this)
+    this.finishRegistration = this.finishRegistration.bind(this);
   }
 
   handleAuth(nick, token) {
@@ -26,8 +25,8 @@ export default class App extends React.Component {
     this.setState({
       auth: {
         nick,
-        token
-      }
+        token,
+      },
     });
   }
 
@@ -37,20 +36,14 @@ export default class App extends React.Component {
     this.setState({
       auth: {
         nick: "",
-        token: ""
-      }
-    });
-  }
-
-  handleRegistration() {
-    this.setState({
-      registration: true
+        token: "",
+      },
     });
   }
 
   finishRegistration() {
     this.setState({
-      registration: false
+      registration: false,
     });
   }
 
@@ -63,29 +56,41 @@ export default class App extends React.Component {
   }
 
   render() {
+    let profile;
+    if (this.isAuthorized()) {
+      profile = (
+        <ProfileMain
+          token={this.state.auth.token}
+          nick={this.state.auth.nick}
+          handleLogout={this.handleLogout}
+        />
+      );
+    }
+
     return (
-      <div className="container container-main" >
-
-        {
-          this.isRegistration() ?
-            (<RegistrationMain finishRegistration={this.finishRegistration} />) :
-            (this.isAuthorized() ? (
-              <ProfileMain
-                token={this.state.auth.token}
-                nick={this.state.auth.nick}
-                handleLogout={this.handleLogout}
-              />
-            ) : (
-                <div>
-                  <LoginMain handleAuth={this.handleAuth} />
-                  <br></br>
-                  <span> or go to <button onClick={this.handleRegistration}>Registration</button></span>
-                </div>
-              )
-            )
-        }
-
-      </div>
-    )
+      <Router>
+        <div className="container container-main">
+          <Switch>
+            <Route path="/registration">
+              <RegistrationMain finishRegistration={this.finishRegistration} />
+            </Route>
+            <Route path="/userNick">{profile}</Route>
+            <Route path="/">
+              <div>
+                <LoginMain handleAuth={this.handleAuth} />
+                <br></br>
+                <span>
+                  {" "}
+                  or go to{" "}
+                  <Link to="/registration">
+                    <button>Registration</button>
+                  </Link>
+                </span>
+              </div>
+            </Route>
+          </Switch>
+        </div>
+      </Router>
+    );
   }
 }
