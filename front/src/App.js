@@ -16,7 +16,6 @@ export default class App extends React.Component {
     };
     this.handleAuth = this.handleAuth.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
-    this.finishRegistration = this.finishRegistration.bind(this);
   }
 
   handleAuth(nick, token) {
@@ -41,41 +40,28 @@ export default class App extends React.Component {
     });
   }
 
-  finishRegistration() {
-    this.setState({
-      registration: false,
-    });
-  }
-
   isAuthorized() {
     return Boolean(this.state.auth.token);
   }
 
-  isRegistration() {
-    return this.state.registration;
-  }
-
   render() {
-    let profile;
-    if (this.isAuthorized()) {
-      profile = (
-        <ProfileMain
-          token={this.state.auth.token}
-          nick={this.state.auth.nick}
-          handleLogout={this.handleLogout}
-        />
-      );
-    }
-
     return (
       <Router>
         <div className="container container-main">
           <Switch>
-            <Route path="/registration">
+            <Route exact path="/registration">
               <RegistrationMain finishRegistration={this.finishRegistration} />
             </Route>
-            <Route path="/userNick">{profile}</Route>
-            <Route path="/">
+            <Route exact path="/userNick">
+              {this.isAuthorized() && (
+                <ProfileMain
+                  token={this.state.auth.token}
+                  nick={this.state.auth.nick}
+                  handleLogout={this.handleLogout}
+                />
+              )}
+            </Route>
+            <Route exact path="/">
               <div>
                 <LoginMain handleAuth={this.handleAuth} />
                 <br></br>
