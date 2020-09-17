@@ -2,7 +2,14 @@ import React from "react";
 import LoginMain from "./components/login/loginMain";
 import ProfileMain from "./components/profile/profileMain";
 import RegistrationMain from "./components/registration/registrationMain";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import Page404 from "./components/page404";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+} from "react-router-dom";
 
 export default class App extends React.Component {
   constructor(props) {
@@ -52,14 +59,15 @@ export default class App extends React.Component {
             <Route exact path="/registration">
               <RegistrationMain finishRegistration={this.finishRegistration} />
             </Route>
-            <Route exact path="/userNick">
-              {this.isAuthorized() && (
-                <ProfileMain
-                  token={this.state.auth.token}
-                  nick={this.state.auth.nick}
-                  handleLogout={this.handleLogout}
-                />
-              )}
+            {this.isAuthorized() && (
+              <Redirect exact from="/" to={`/user/${this.state.auth.nick}`} />
+            )}
+            <Route path="/user/:nick">
+              <ProfileMain
+                token={this.state.auth.token}
+                nick={this.state.auth.nick}
+                handleLogout={this.handleLogout}
+              />
             </Route>
             <Route exact path="/">
               <div>
@@ -73,6 +81,9 @@ export default class App extends React.Component {
                   </Link>
                 </span>
               </div>
+            </Route>
+            <Route>
+              <Page404 />
             </Route>
           </Switch>
         </div>
