@@ -3,7 +3,7 @@ import ProfileGreeting from "./profileGreeting";
 import ProfileAvatar from "./profileAvatar";
 import ProfilePhotos from "./profilePhotos";
 import ProfileAbout from "./profileAbout";
-import Page404 from "../page404";
+import ProfileView from "./profileView";
 import { withRouter } from "react-router-dom";
 
 class ProfileMain extends React.Component {
@@ -11,7 +11,7 @@ class ProfileMain extends React.Component {
     return (
       <div>
         {this.props.nick !== this.props.match.params.nick ? (
-          <Page404 />
+          <ProfileView nick={this.props.match.params.nick} />
         ) : (
           <div>
             <ProfileGreeting

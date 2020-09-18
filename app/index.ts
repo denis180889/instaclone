@@ -61,7 +61,7 @@ app.post('/create-user', jsonParser, async function (req: any, res: any) {
     res.sendStatus(201);
 });
 
-app.get('/get-user/:userNick', passportJwt, async function (req: any, res: any) {
+app.get('/get-user/:userNick', async function (req: any, res: any) {
     const user: User | null = await mongoClient.findObject<User>('users', { nick: req.params.userNick });
     if (!user) throw new Error('User was not found');
 
@@ -141,7 +141,7 @@ app.post('/add-photos/:userNick', passportJwt, upload.array('photos', 5), async 
     res.sendStatus(200);
 });
 
-app.get('/get-photos/:userNick', passportJwt, async function (req: any, res: any) {
+app.get('/get-photos/:userNick', async function (req: any, res: any) {
     const user: User | null = await mongoClient.findObject<User>('users', { nick: req.params.userNick });
     if (!user) throw new Error('User was not found');
 
