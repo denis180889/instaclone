@@ -3,6 +3,7 @@ import LoginMain from "./components/login/loginMain";
 import ProfileMain from "./components/profile/profileMain";
 import RegistrationMain from "./components/registration/registrationMain";
 import Page404 from "./components/page404";
+import SearchMain from "./components/search/searchMain";
 import {
   BrowserRouter as Router,
   Switch,
@@ -81,6 +82,9 @@ export default class App extends React.Component {
                   </Link>
                 </span>
               </div>
+            </Route>
+            <Route exact path="/search">
+              <SearchMain />
             </Route>
             <Route>
               <Page404 />
