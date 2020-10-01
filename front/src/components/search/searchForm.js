@@ -10,7 +10,7 @@ export default class SearchForm extends React.Component {
     e.preventDefault();
 
     const searchPhrase = e.target.elements.searchPhrase.value;
-    let response = await fetch(`/search?searchPhrase=${searchPhrase}`);
+    let response = await fetch(`/searchUsers?searchPhrase=${searchPhrase}`);
 
     if (response.ok) {
       const data = await response.json();
