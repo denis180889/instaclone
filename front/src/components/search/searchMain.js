@@ -19,7 +19,7 @@ export default class SearchMain extends React.Component {
 
   render() {
     return (
-      <div className="container container-column ">
+      <div className="container container-column container-main">
         <SearchForm handleSearch={this.handleSearch} />
         <SearchCard searchResults={this.state.searchResults} />
       </div>

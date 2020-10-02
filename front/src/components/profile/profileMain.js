@@ -9,7 +9,7 @@ import { withRouter } from "react-router-dom";
 class ProfileMain extends React.Component {
   render() {
     return (
-      <div>
+      <div className="container-main">
         {this.props.nick !== this.props.match.params.nick ? (
           <ProfileView nick={this.props.match.params.nick} />
         ) : (
