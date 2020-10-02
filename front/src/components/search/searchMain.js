@@ -1,5 +1,6 @@
 import React from "react";
 import SearchForm from "./searchForm";
+import SearchCard from "./searchCard";
 
 export default class SearchMain extends React.Component {
   constructor(props) {
@@ -18,10 +19,9 @@ export default class SearchMain extends React.Component {
 
   render() {
     return (
-      <div className="container">
-        <div className="container-row">
-          <SearchForm handleSearch={this.handleSearch} />
-        </div>
+      <div className="container container-column ">
+        <SearchForm handleSearch={this.handleSearch} />
+        <SearchCard searchResults={this.state.searchResults} />
       </div>
     );
   }

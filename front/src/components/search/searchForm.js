@@ -14,7 +14,7 @@ export default class SearchForm extends React.Component {
 
     if (response.ok) {
       const data = await response.json();
-      this.props.handleSearch(data.results);
+      this.props.handleSearch(data);
     } else {
       this.setState({
         error: true,
@@ -24,7 +24,7 @@ export default class SearchForm extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="container-row">
         <form onSubmit={this.search}>
           <h1>Seach profiles:</h1>
           <input type="text" name="searchPhrase"></input>
