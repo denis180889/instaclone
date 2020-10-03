@@ -1,6 +1,7 @@
 import express from 'express';
 import passport from 'passport'
 import bodyParser from 'body-parser';
+import _ from 'underscore';
 import MongoClient from './mongoClient';
 import multer from 'multer';
 import { ObjectId } from 'mongodb';
@@ -61,7 +62,7 @@ app.post('/create-user', jsonParser, async function (req: any, res: any) {
     res.sendStatus(201);
 });
 
-app.get('/get-user/:userNick', passportJwt, async function (req: any, res: any) {
+app.get('/get-user/:userNick', async function (req: any, res: any) {
     const user: User | null = await mongoClient.findObject<User>('users', { nick: req.params.userNick });
     if (!user) throw new Error('User was not found');
 
@@ -71,6 +72,22 @@ app.get('/get-user/:userNick', passportJwt, async function (req: any, res: any) 
     delete user._id;
 
     res.json(user);
+});
+
+app.get('/searchUsers', jsonParser, async function (req: any, res: any) {
+    let resultUsers: User[] = [];
+
+    let usersByNick: User[] | null = await mongoClient.searchObject<User>('users', { nick: { $regex: `.*${req.query.searchPhrase}.*` } });
+    if (usersByNick) resultUsers = resultUsers.concat(usersByNick);
+
+    let usersByName: User[] | null = await mongoClient.searchObject<User>('users', { name: { $regex: `.*${req.query.searchPhrase}.*` } });
+    if (usersByName) resultUsers = resultUsers.concat(usersByName);
+
+    if (!resultUsers) throw new Error('Users were not found');
+
+    //TODO remove passwords from array 
+
+    return res.json(_.uniq(resultUsers, 'nick'));
 });
 
 app.patch('/edit-user/:userNick', passportJwt, jsonParser, async function (req: any, res: any) {
@@ -141,7 +158,7 @@ app.post('/add-photos/:userNick', passportJwt, upload.array('photos', 5), async 
     res.sendStatus(200);
 });
 
-app.get('/get-photos/:userNick', passportJwt, async function (req: any, res: any) {
+app.get('/get-photos/:userNick', async function (req: any, res: any) {
     const user: User | null = await mongoClient.findObject<User>('users', { nick: req.params.userNick });
     if (!user) throw new Error('User was not found');
 

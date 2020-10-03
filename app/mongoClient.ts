@@ -30,6 +30,21 @@ export default class MongoClient {
         }
     }
 
+    async searchObject<T>(collection: string, obj: any): Promise<T[] | null> {
+        const client = await this.getConnection();
+        try {
+            const db = client.db();
+            const result = await db.collection<T>(collection).find(obj).toArray();
+            return result;
+        }
+        catch (e) {
+            throw e;
+        }
+        finally {
+            await client.close();
+        }
+    }
+
     async findObject<T>(collection: string, filter: any): Promise<T | null> {
         const client = await this.getConnection();
         try {

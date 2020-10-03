@@ -2,22 +2,28 @@ import React from "react";
 import LoginMain from "./components/login/loginMain";
 import ProfileMain from "./components/profile/profileMain";
 import RegistrationMain from "./components/registration/registrationMain";
+import Page404 from "./components/page404";
+import SearchMain from "./components/search/searchMain";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+} from "react-router-dom";
 
 export default class App extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
       registration: false,
       auth: {
         nick: localStorage.getItem("nick"),
-        token: localStorage.getItem("token")
-      }
+        token: localStorage.getItem("token"),
+      },
     };
     this.handleAuth = this.handleAuth.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
-    this.handleRegistration = this.handleRegistration.bind(this)
-    this.finishRegistration = this.finishRegistration.bind(this)
   }
 
   handleAuth(nick, token) {
@@ -26,8 +32,8 @@ export default class App extends React.Component {
     this.setState({
       auth: {
         nick,
-        token
-      }
+        token,
+      },
     });
   }
 
@@ -37,20 +43,8 @@ export default class App extends React.Component {
     this.setState({
       auth: {
         nick: "",
-        token: ""
-      }
-    });
-  }
-
-  handleRegistration() {
-    this.setState({
-      registration: true
-    });
-  }
-
-  finishRegistration() {
-    this.setState({
-      registration: false
+        token: "",
+      },
     });
   }
 
@@ -58,34 +52,46 @@ export default class App extends React.Component {
     return Boolean(this.state.auth.token);
   }
 
-  isRegistration() {
-    return this.state.registration;
-  }
-
   render() {
     return (
-      <div className="container container-main" >
-
-        {
-          this.isRegistration() ?
-            (<RegistrationMain finishRegistration={this.finishRegistration} />) :
-            (this.isAuthorized() ? (
+      <Router>
+        <div className="container container-main">
+          <Switch>
+            <Route exact path="/registration">
+              <RegistrationMain finishRegistration={this.finishRegistration} />
+            </Route>
+            {this.isAuthorized() && (
+              <Redirect exact from="/" to={`/user/${this.state.auth.nick}`} />
+            )}
+            <Route path="/user/:nick">
               <ProfileMain
                 token={this.state.auth.token}
                 nick={this.state.auth.nick}
                 handleLogout={this.handleLogout}
               />
-            ) : (
-                <div>
-                  <LoginMain handleAuth={this.handleAuth} />
-                  <br></br>
-                  <span> or go to <button onClick={this.handleRegistration}>Registration</button></span>
-                </div>
-              )
-            )
-        }
-
-      </div>
-    )
+            </Route>
+            <Route exact path="/">
+              <div>
+                <LoginMain handleAuth={this.handleAuth} />
+                <br></br>
+                <span>
+                  {" "}
+                  or go to{" "}
+                  <Link to="/registration">
+                    <button>Registration</button>
+                  </Link>
+                </span>
+              </div>
+            </Route>
+            <Route exact path="/search">
+              <SearchMain />
+            </Route>
+            <Route>
+              <Page404 />
+            </Route>
+          </Switch>
+        </div>
+      </Router>
+    );
   }
 }
