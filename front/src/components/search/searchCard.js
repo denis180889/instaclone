@@ -7,6 +7,7 @@ export default class SearchCard extends React.Component {
       <div className="container-column">
         {this.props.searchResults.map((searchCard) => (
           <Link
+            className="link"
             to={{
               pathname: `/user/${searchCard.nick}`,
             }}
